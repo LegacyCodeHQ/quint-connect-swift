@@ -134,6 +134,25 @@ static var config: DriverConfig { DriverConfig(nondetPath: ["last"]) }
 
 `Tests/QuintConnectTests/Fixtures/counter.qnt` shows the pattern.
 
+## Pitfalls
+
+**Every action in `step` needs a name.** Quint Connect reads the action name Quint records for each state. An action
+that Quint cannot name shows up as an anonymous step, and replay fails with `anonymousAction`. The usual cause is a
+nondeterministic `any { ... }` nested inside a named action, whose branches are anonymous `all { ... }` blocks. Give each
+branch its own named action, or turn the choice into a boolean guard (`a or b`) when it only selects between values.
+
+**Action arguments are not picks.** `step.nondetPicks` holds only what the action chose with `nondet`. A constant passed
+to an action, such as `finishReleaseCue(ReleaseCueCompleted)`, is not recorded. Read it from the state after the step
+instead, for example the `lastFeedbackCueOutcome` variable that the action sets.
+
+**Random simulation may never reach the interesting states.** If `step` offers many disruptive actions, most traces
+end in the first few steps and rarely reach, say, a running engine. Simulate with a smaller `step` action per scenario
+(`RunConfig(stepAction:)`) rather than the full one, and check coverage by counting the actions your traces contain.
+
+**One Quint action can be several implementation events, or the reverse.** When the implementation folds two model
+actions into one event, have the driver apply the event on the first action and treat the second as a no-op, and project
+state so the two sides agree between them. The mapping is a refinement worth documenting next to the model.
+
 ## Configuration
 
 | Setting | Where | Meaning |
