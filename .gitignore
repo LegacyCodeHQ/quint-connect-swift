@@ -1,0 +1,13 @@
+# SwiftPM / Xcode
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# Quint toolchain and its model checker output
+node_modules/
+_apalache-out/
+
+# macOS
+.DS_Store

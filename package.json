@@ -1,0 +1,8 @@
+{
+  "name": "quint-connect-swift-tools",
+  "private": true,
+  "description": "Pins the Quint toolchain that generates traces for the tests.",
+  "devDependencies": {
+    "@informalsystems/quint": "0.33.0"
+  }
+}
