@@ -1,0 +1,25 @@
+# swift-format owns layout (indentation, line breaks, trailing commas, imports); SwiftLint owns correctness and style rules.
+included:
+  - Sources
+  - Tests
+
+disabled_rules:
+  # swift-format adds trailing commas to multi-line collections.
+  - trailing_comma
+  # swift-format puts the brace of a wrapped condition or signature on its own line.
+  - opening_brace
+
+# swift-format wraps at 120 where it can but never breaks a string literal, so the linter only flags the egregious.
+line_length:
+  warning: 150
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+  ignores_multiline_strings: true
+
+identifier_name:
+  min_length: 1
+
+# Decodable containers need one method per primitive type; the repetition is the protocol's.
+file_length:
+  warning: 400
