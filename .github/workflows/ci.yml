@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  swift:
+    name: Format, Lint, Test
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Install pinned Quint
+        run: make setup
+
+      - name: Format, lint and test
+        run: make check
+
+      # The library must also build for iOS, where it cannot launch `quint`.
+      - name: Build for iOS
+        run: xcodebuild build -scheme quint-connect-swift -destination 'generic/platform=iOS Simulator'
+
+  gitleaks:
+    name: Gitleaks
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+
+      - name: Run gitleaks
+        run: gitleaks git --redact --verbose

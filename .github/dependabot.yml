@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Kolkata
+    cooldown:
+      default-days: 7
+
+  # The pinned Quint toolchain. A Quint bump changes trace output, so review it with `make test`.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Kolkata
+    cooldown:
+      default-days: 7
