@@ -101,9 +101,15 @@
             }
         }
 
-        @Test func quintErrorsSurfaceWithTheirOutput() {
+        @Test func quintErrorsSurfaceWithTheirOutput() throws {
             let config = RunConfig(spec: "does-not-exist.qnt", quint: quint)
-            #expect(throws: QuintConnectError.self) { try QuintConnect.simulate(config) { RecorderDriver() } }
+            do {
+                try QuintConnect.simulate(config) { RecorderDriver() }
+                Issue.record("Expected quint to fail")
+            } catch let QuintConnectError.quintFailed(status, stderr) {
+                #expect(status != 0)
+                #expect(!stderr.isEmpty)
+            }
         }
     }
 
@@ -148,7 +154,12 @@
         @Test func aWrongImplementationFailsTheScriptedScenario() throws {
             let config = TestConfig(
                 spec: Quint.fixture("counter.qnt"), test: "incrementTest", maxSamples: 1, seed: "0x1", quint: quint)
-            #expect(throws: QuintConnectError.self) { try QuintConnect.replayTest(config) { Broken() } }
+            do {
+                try QuintConnect.replayTest(config) { Broken() }
+                Issue.record("Expected a divergence")
+            } catch QuintConnectError.stateDivergence {
+                // The wrong implementation is caught by the comparison, not by Quint failing to run.
+            }
         }
     }
 
