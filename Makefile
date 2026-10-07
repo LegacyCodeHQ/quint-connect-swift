@@ -3,10 +3,12 @@
 # Install the pinned Quint that the conformance tests run against.
 setup:
 	npm ci
+	Scripts/install-quint-evaluator.sh
 	$(MAKE) warm-quint
 
-# Quint downloads its evaluator on first use. Do it once here, so test processes that start together on a fresh
-# machine (CI) do not race on the download.
+# Quint installs its evaluator on first use. Run it once here, so test processes that start together on a fresh
+# machine (CI) do not race on the install. Scripts/install-quint-evaluator.sh has already put the binary in place
+# from the public release URL, because Quint's own download goes through GitHub's API and hits its rate limit on CI.
 warm-quint:
 	node_modules/.bin/quint run Tests/QuintConnectTests/Fixtures/counter.qnt --max-samples 1 --max-steps 1 --verbosity 0
 
