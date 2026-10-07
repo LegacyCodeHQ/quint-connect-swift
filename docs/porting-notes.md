@@ -45,3 +45,6 @@ directly, what differs because Swift is not Rust, and what is not ported yet.
 - `quint test` has no `--mbt` flag, and its ITF traces have no `mbt::actionTaken` or `mbt::nondetPicks`, in 0.32.0 and
   0.33.0. `replayTest` therefore needs a spec that records its action in a sum-type variable. Without one it fails with
   an error that says so.
+- **The first `quint` run on a machine downloads an evaluator, and concurrent first runs crash** with `EEXIST` on that
+  download. Parallel tests on a fresh CI runner hit it. The package serializes its own `quint` launches, and `make setup`
+  runs Quint once so separate test processes find the evaluator already installed.
