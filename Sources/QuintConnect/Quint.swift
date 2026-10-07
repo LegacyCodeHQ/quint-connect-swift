@@ -21,6 +21,10 @@
         }
     }
 
+    /// Serializes `quint` launches within this process. The first run on a machine downloads Quint's evaluator, and
+    /// concurrent first runs race on that download and crash (`EEXIST`), so parallel tests must not start together.
+    private let launchLock = NSLock()
+
     /// A random seed in the form Quint takes, or `$QUINT_SEED` to reproduce an earlier failure.
     public func randomQuintSeed() -> String {
         if let seed = ProcessInfo.processInfo.environment["QUINT_SEED"], !seed.isEmpty { return seed }
@@ -145,6 +149,8 @@
             let stderr = try FileHandle(forWritingTo: stderrURL)
             defer { try? stderr.close() }
 
+            launchLock.lock()
+            defer { launchLock.unlock() }
             let process = Process()
             process.executableURL = invocation.executable
             process.arguments = invocation.leadingArguments + arguments

@@ -1,8 +1,14 @@
-.PHONY: setup build test format format-check check setup-hooks
+.PHONY: setup warm-quint build test format format-check check setup-hooks
 
 # Install the pinned Quint that the conformance tests run against.
 setup:
 	npm ci
+	$(MAKE) warm-quint
+
+# Quint downloads its evaluator on first use. Do it once here, so test processes that start together on a fresh
+# machine (CI) do not race on the download.
+warm-quint:
+	node_modules/.bin/quint run Tests/QuintConnectTests/Fixtures/counter.qnt --max-samples 1 --max-steps 1 --verbosity 0
 
 build:
 	swift build
