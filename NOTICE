@@ -1,0 +1,10 @@
+Copyright 2026-present, Legacy Code Headquarters (OPC) Private Limited.
+
+This product is licensed under the Apache License, Version 2.0.
+
+This product is a Swift port of the design of Quint Connect
+(https://github.com/informalsystems/quint-connect), Copyright Informal Systems Inc., licensed under the
+Apache License, Version 2.0. It reimplements that library's driver, step, trace-replay and state-comparison
+model for Swift; it does not bundle its source code.
+
+Quint (https://github.com/informalsystems/quint) is a separate tool that this package runs; it is not bundled.
